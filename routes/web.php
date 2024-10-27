@@ -53,3 +53,9 @@ Route::get('migrate-db', function () {
     dd("Database migrated successfully.");
 
 });
+
+Route::get('clear-config', function () {
+    \Illuminate\Support\Facades\Artisan::call('view:clear');
+    \Illuminate\Support\Facades\Artisan::call('cache:clear');
+    \Illuminate\Support\Facades\Artisan::call('config:clear');   
+});
