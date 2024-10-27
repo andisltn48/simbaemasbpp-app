@@ -1,4 +1,4 @@
-<x-app-layout title="Data Sampah">
+<x-app-layout title="Nasabah">
     <style>
         .btn-create {
             width: 10em;
@@ -10,11 +10,11 @@
     </style>
     <section class="section">
         <div class="section-header">
-          <h1>Data Sampah</h1>
+          <h1>Nasabah</h1>
           <div class="section-header-breadcrumb">
             <div class="breadcrumb-item active"><a href="/">Dashboard</a></div>
             {{-- <div class="breadcrumb-item"><a href="#">Components</a></div> --}}
-            <div class="breadcrumb-item">Data Sampah</div>
+            <div class="breadcrumb-item">Nasabah</div>
           </div>
         </div>
 
@@ -32,10 +32,8 @@
                       <thead>
                         <tr>
                             <th>No</th>
-                            <th>Nama Sampah</th>
-                            <th>Satuan</th>
-                            <th>Harga Beli</th>
-                            <th>Harga Jual</th>
+                            <th>Nama Nasabah</th>
+                            <th>Alamat</th>
                             <th>Action</th>
                         </tr>
                       </thead>
@@ -43,24 +41,22 @@
                           $no = 1;
                       @endphp
                       <tbody>
-                        @foreach ($data_sampah as $sampah)
+                        @foreach ($data_nasabah as $nasabah)
                           
                         <tr>
                             <td>{{$no++}}</td>
-                            <td>{{$sampah->nama_sampah}}</td>
-                            <td>{{$sampah->satuan}}</td>
-                            <td>{{'Rp ' . number_format($sampah->harga_beli, 0, ',', '.')}}</td>
-                            <td>{{'Rp ' . number_format($sampah->harga_jual, 0, ',', '.')}}</td>
+                            <td>{{$nasabah->nama}}</td>
+                            <td>{{$nasabah->alamat}}</td>
                             <td class="">
                                 <a 
                                 data-toggle="modal" 
                                 data-target="#editModal" 
-                                data-id="{{ $sampah->id }}"
-                                data-link="{{ route('data-sampah.update', $sampah->id) }}"
+                                data-id="{{ $nasabah->id }}"
+                                data-link="{{ route('data-nasabah.update', $nasabah->id) }}"
                                 class="btn-edit col">
                                 <i class="fas fa-pen" style="color: #FFD43B;"></i>
                                 </a>
-                                <a href="" class="col" id="btn-delete" data-confirm="Hapus data|Data yang sudah dihapus tidak bisa dikembalikan" data-confirm-yes="window.location.href='{{ route('data-sampah.destroy', $sampah->id) }}'">
+                                <a href="" class="col" id="btn-delete" data-confirm="Hapus data|Data yang sudah dihapus tidak bisa dikembalikan" data-confirm-yes="window.location.href='{{ route('data-nasabah.destroy', $nasabah->id) }}'">
                                     <i class="fas fa-trash" style="color: red;"></i>
                                 </a>
                             </td>
@@ -78,29 +74,21 @@
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title">Tambah Data Sampah</h5>
+              <h5 class="modal-title">Tambah Nasabah</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <form action="{{route('data-sampah.store')}}" method="post">
+            <form action="{{route('data-nasabah.store')}}" method="post">
                 @csrf
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="name">Nama Sampah</label>
-                        <input type="text" name="nama_sampah" class="form-control" id="name">
+                        <label for="name">Nama Nasabah</label>
+                        <input type="text" name="nama" class="form-control" id="name">
                     </div>
                     <div class="form-group">
-                        <label for="satuan">Satuan</label>
-                        <input type="text" name="satuan" class="form-control" id="satuan">
-                    </div>
-                    <div class="form-group">
-                        <label for="harga_beli">Harga Beli</label>
-                        <input type="text" name="harga_beli" class="form-control" id="harga_beli" oninput="onInputChange(event)">
-                    </div>
-                    <div class="form-group">
-                        <label for="harga_jual">Harga Jual</label>
-                        <input type="text" name="harga_jual" class="form-control" id="harga_jual" oninput="onInputChange(event)">
+                        <label for="alamat">Alamat</label>
+                        <input type="text" name="alamat" class="form-control" id="alamat">
                     </div>
                 </div>
                 <div class="modal-footer bg-whitesmoke br">
@@ -116,7 +104,7 @@
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title">Edit Data Sampah</h5>
+              <h5 class="modal-title">Edit Data Nasabah</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -125,20 +113,12 @@
                 @csrf
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="name-edit">Nama Sampah</label>
-                        <input type="text" name="nama_sampah" class="form-control" id="name-edit">
+                        <label for="name-edit">Nama Nasabah</label>
+                        <input type="text" name="nama" class="form-control" id="name-edit">
                     </div>
                     <div class="form-group">
-                        <label for="satuan-edit">Satuan</label>
-                        <input type="text" name="satuan" class="form-control" id="satuan-edit">
-                    </div>
-                    <div class="form-group">
-                        <label for="harga_beli-edit">Harga Beli</label>
-                        <input type="text" name="harga_beli" class="form-control" id="harga_beli-edit" oninput="onInputChange(event)">
-                    </div>
-                    <div class="form-group">
-                        <label for="harga_jual-edit">Harga Jual</label>
-                        <input type="text" name="harga_jual" class="form-control" id="harga_jual-edit" oninput="onInputChange(event)">
+                        <label for="alamat-edit">Alamat</label>
+                        <input type="text" name="alamat" class="form-control" id="alamat-edit">
                     </div>
                 </div>
                 <div class="modal-footer bg-whitesmoke br">
@@ -184,16 +164,10 @@
                 data: {
                     id: id
                 },
-                url: "{{ route('data-sampah.detail-json') }}",
+                url: "{{ route('data-nasabah.detail-json') }}",
             }).done(function(response) {
-                $("#name-edit").val(response.sampah.nama_sampah);
-                $("#satuan-edit").val(response.sampah.satuan);
-
-                var hargaBeli = formatRupiah(response.sampah.harga_beli);
-                $("#harga_beli-edit").val(hargaBeli);
-
-                var hargaJual = formatRupiah(response.sampah.harga_jual);
-                $("#harga_jual-edit").val(hargaJual);
+                $("#name-edit").val(response.nasabah.nama);
+                $("#alamat-edit").val(response.nasabah.alamat);
             });
 
             

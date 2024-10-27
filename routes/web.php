@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DataNasabahController;
 use App\Http\Controllers\DataSampahController;
 use Illuminate\Support\Facades\Route;
 
@@ -36,4 +37,11 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/data-sampah/update/{id}', [DataSampahController::class, 'update'])->name('data-sampah.update');
     Route::get('/data-sampah/delete/{id}', [DataSampahController::class, 'destroy'])->name('data-sampah.destroy');
     Route::get('/data-sampah/detai/json', [DataSampahController::class, 'detailJson'])->name('data-sampah.detail-json');
+
+    //data nasabah
+    Route::get('/data-nasabah', [DataNasabahController::class, 'index'])->name('data-nasabah.index');
+    Route::post('/data-nasabah/submit', [DataNasabahController::class, 'store'])->name('data-nasabah.store');
+    Route::post('/data-nasabah/update/{id}', [DataNasabahController::class, 'update'])->name('data-nasabah.update');
+    Route::get('/data-nasabah/delete/{id}', [DataNasabahController::class, 'destroy'])->name('data-nasabah.destroy');
+    Route::get('/data-nasabah/detai/json', [DataNasabahController::class, 'detailJson'])->name('data-nasabah.detail-json');
 });
