@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class applayout extends Component
+class AppLayout extends Component
 {
     public ?string $title;
     /**
@@ -26,6 +26,6 @@ class applayout extends Component
      */
     public function render()
     {
-        return view('components.applayout');
+        return view('components.app-layout');
     }
 }
