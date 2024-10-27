@@ -45,3 +45,11 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/data-nasabah/delete/{id}', [DataNasabahController::class, 'destroy'])->name('data-nasabah.destroy');
     Route::get('/data-nasabah/detai/json', [DataNasabahController::class, 'detailJson'])->name('data-nasabah.detail-json');
 });
+
+Route::get('migrate-db', function () {
+
+    \Illuminate\Support\Facades\Artisan::call('migrate');
+
+    dd("Database migrated successfully.");
+
+});
