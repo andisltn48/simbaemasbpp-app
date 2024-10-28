@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-  <title> Simbaemasbpp &mdash; {{$title}}</title>
+  <title> Simbaemasbpp &mdash; {{$title ?? ''}}</title>
 
   <!-- General CSS Files -->
   <link rel="stylesheet" href="assets/modules/bootstrap/css/bootstrap.min.css">
@@ -244,9 +244,9 @@
           </li> --}}
           <li class="dropdown"><a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
             <img alt="image" src="assets/img/avatar/avatar-1.png" class="rounded-circle mr-1">
-            <div class="d-sm-none d-lg-inline-block">Hi, Ujang Maman</div></a>
+            <div class="d-sm-none d-lg-inline-block">Hi, {{ Auth::user()->name }}</div></a>
             <div class="dropdown-menu dropdown-menu-right">
-              <div class="dropdown-title">Logged in 5 min ago</div>
+              {{-- <div class="dropdown-title">Logged in 5 min ago</div>
               <a href="features-profile.html" class="dropdown-item has-icon">
                 <i class="far fa-user"></i> Profile
               </a>
@@ -256,8 +256,8 @@
               <a href="features-settings.html" class="dropdown-item has-icon">
                 <i class="fas fa-cog"></i> Settings
               </a>
-              <div class="dropdown-divider"></div>
-              <a href="#" class="dropdown-item has-icon text-danger">
+              <div class="dropdown-divider"></div> --}}
+              <a href="logout" class="dropdown-item has-icon text-danger">
                 <i class="fas fa-sign-out-alt"></i> Logout
               </a>
             </div>
@@ -274,12 +274,8 @@
           </div>
           <ul class="sidebar-menu">
             {{-- <li class="menu-header">Dashboard</li> --}}
-            <li class="dropdown">
-              <a href="#" class="nav-link has-dropdown"><i class="fas fa-home"></i><span>Dashboard</span></a>
-              <ul class="dropdown-menu">
-                <li><a class="nav-link" href="index-0.html">Pembelian</a></li>
-                <li class=active><a class="nav-link" href="index.html">Penjualan</a></li>
-              </ul>
+            <li class="dropdown {{ Request::is('/') ? 'active' : '' }}">
+              <a href="/" class="nav-link"><i class="fas fa-home"></i><span>Dashboard</span></a>
             </li>
             <li class="dropdown {{ Request::is('data-sampah', 'data-sampah/*') ? 'active' : '' }}">
               <a href="{{route('data-sampah.index')}}" class="nav-link"><i class="fas fa-recycle"></i><span>Data Sampah</span></a>
@@ -287,6 +283,14 @@
             
             <li class="dropdown {{ Request::is('data-nasabah', 'data-nasabah/*') ? 'active' : '' }}">
               <a href="{{route('data-nasabah.index')}}" class="nav-link"><i class="fas fa-users"></i><span>Nasabah</span></a>
+            </li>
+
+            <li class="dropdown {{ Request::is('history-pemasukan', 'history-pemasukan/*', 'history-pengeluaran', 'history-pengeluaran/*') ? 'active' : '' }}">
+              <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>History</span></a>
+              <ul class="dropdown-menu">
+                <li class="{{ Request::is('history-pemasukan', 'history-pemasukan/*') ? 'active' : '' }}"><a class="nav-link" href="{{route('data-sampah.index-pemasukan')}}">History Pemasukan</a></li>
+                <li class="{{ Request::is('history-pengeluaran', 'history-pengeluaran/*') ? 'active' : '' }}"><a class="nav-link" href="{{route('data-sampah.index-pengeluaran')}}">History Pengeluaran</a></li>
+              </ul>
             </li>
           </ul>
 

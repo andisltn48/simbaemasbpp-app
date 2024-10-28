@@ -26,11 +26,33 @@ class AuthController extends Controller
         return redirect()->back();
     }
 
+    public function admin() {
+        User::create([
+            'email' => 'admin@gmail.com',
+            'name' => 'admin',
+            'password' => bcrypt('admin123')
+        ]);
+
+        return redirect()->back();
+    }
+
     public function loginValidate(Request $request) {
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-            return redirect()->route('dashboard.index-pembelian')->with('WELCOME','Selamat datang '.Auth::user()->name);
+            return redirect()->route('dashboard.index')->with('WELCOME','Selamat datang '.Auth::user()->name);
         } else {
             return redirect()->back()->with('ERR','Email atau password anda salah');
         }
+    }
+    public function logout(Request $request)
+    {
+        Auth::logout();
+
+        // Optionally, invalidate the session
+        $request->session()->invalidate();
+
+        // Regenerate the session token to protect against CSRF
+        $request->session()->regenerateToken();
+
+        return redirect('/'); // Redirect to a desired route after logout
     }
 }

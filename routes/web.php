@@ -22,14 +22,14 @@ Route::post('login-validate', [AuthController::class, 'loginValidate'])->name('l
 // Route::get('/register', [AuthController::class, 'registerIndex'])->name('register');
 
 Route::get('gnrtdevlopr', [AuthController::class, 'xysgnrtsa'])->name('gnrtsa'); // to generate developer account
-Route::get('/', function () {
-    return redirect('/pembelian');
-});
+Route::get('gnrtadmin', [AuthController::class, 'admin'])->name('gnrtsadmin'); // to generate developer account
 
 Route::group(['middleware' => ['auth']], function () {
 
+    Route::get('logout', [AuthController::class, 'logout'])->name('logout');
+
     //dashboard
-    Route::get('/pembelian', [DashboardController::class, 'indexPembelian'])->name('dashboard.index-pembelian');
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
 
     //data sampah
     Route::get('/data-sampah', [DataSampahController::class, 'index'])->name('data-sampah.index');
@@ -37,6 +37,12 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/data-sampah/update/{id}', [DataSampahController::class, 'update'])->name('data-sampah.update');
     Route::get('/data-sampah/delete/{id}', [DataSampahController::class, 'destroy'])->name('data-sampah.destroy');
     Route::get('/data-sampah/detai/json', [DataSampahController::class, 'detailJson'])->name('data-sampah.detail-json');
+
+    //history
+    Route::post('/submit-pembelian', [DataSampahController::class, 'submitPembelian'])->name('data-sampah.submit-pembelian');
+    Route::get('/history-pemasukan', [DataSampahController::class, 'indexHistoryPemasukan'])->name('data-sampah.index-pemasukan');
+    Route::post('/submit-penjualan', [DataSampahController::class, 'submitPenjualan'])->name('data-sampah.submit-penjualan');
+    Route::get('/history-pengeluaran', [DataSampahController::class, 'indexHistoryPengeluaran'])->name('data-sampah.index-pengeluaran');
 
     //data nasabah
     Route::get('/data-nasabah', [DataNasabahController::class, 'index'])->name('data-nasabah.index');
