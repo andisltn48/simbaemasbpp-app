@@ -267,10 +267,14 @@
       <div class="main-sidebar sidebar-style-2">
         <aside id="sidebar-wrapper">
           <div class="sidebar-brand">
-            <a href="index.html">SIMBAEMASBPP</a>
+            {{-- <a href="/">SIMBAEMASBPP</a> --}}
+            <a href="/">
+              <img src="assets/img/logo.jpg" alt="logo" width="50" class="shadow-light rounded-circle">
+              SIMBAEMASBPP
+            </a>
           </div>
           <div class="sidebar-brand sidebar-brand-sm">
-            <a href="index.html">SB</a>
+            <a href="/">BS</a>
           </div>
           <ul class="sidebar-menu">
             {{-- <li class="menu-header">Dashboard</li> --}}
