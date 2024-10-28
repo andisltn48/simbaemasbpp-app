@@ -290,7 +290,7 @@
             </li>
 
             <li class="dropdown {{ Request::is('history-pemasukan', 'history-pemasukan/*', 'history-pengeluaran', 'history-pengeluaran/*') ? 'active' : '' }}">
-              <a href="#" class="nav-link has-dropdown"><i class="fa-solid fa-clock-rotate-left"></i><span>History</span></a>
+              <a href="#" class="nav-link has-dropdown"><i class="fas fa-history"></i><span>History</span></a>
               <ul class="dropdown-menu">
                 <li class="{{ Request::is('history-pemasukan', 'history-pemasukan/*') ? 'active' : '' }}"><a class="nav-link" href="{{route('data-sampah.index-pemasukan')}}">History Pemasukan</a></li>
                 <li class="{{ Request::is('history-pengeluaran', 'history-pengeluaran/*') ? 'active' : '' }}"><a class="nav-link" href="{{route('data-sampah.index-pengeluaran')}}">History Pengeluaran</a></li>
