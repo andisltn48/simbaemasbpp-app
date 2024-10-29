@@ -34,6 +34,7 @@
               <div class="col">
                 <div class="collapse multi-collapse show" id="multiCollapseExample1">
                   <div class="table-responsive">
+                    <p><b>History Pembelian</b></p>
                     <table class="table " id="dataTable">
                       <thead>
                         <tr>
@@ -73,6 +74,8 @@
                 <div class="collapse multi-collapse" id="multiCollapseExample2">
                   <div class="table-responsive">
                     <table class="table " id="dataTablePenjualan">
+                      
+                      <p><b>History Penjualan</b></p>
                       <thead>
                         <tr>
                             <th>No</th>
