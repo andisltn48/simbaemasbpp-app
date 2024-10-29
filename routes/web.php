@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DataAdminController;
 use App\Http\Controllers\DataNasabahController;
 use App\Http\Controllers\DataSampahController;
 use Illuminate\Support\Facades\Route;
@@ -50,9 +51,23 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/data-nasabah/update/{id}', [DataNasabahController::class, 'update'])->name('data-nasabah.update');
     Route::get('/data-nasabah/delete/{id}', [DataNasabahController::class, 'destroy'])->name('data-nasabah.destroy');
     Route::get('/data-nasabah/detai/json', [DataNasabahController::class, 'detailJson'])->name('data-nasabah.detail-json');
+
+    //data admin
+    Route::get('/data-admin', [DataAdminController::class, 'index'])->name('data-admin.index');
+    Route::post('/data-admin/submit', [DataAdminController::class, 'store'])->name('data-admin.store');
+    Route::post('/data-admin/update/{id}', [DataAdminController::class, 'update'])->name('data-admin.update');
+    Route::get('/data-admin/delete/{id}', [DataAdminController::class, 'destroy'])->name('data-admin.destroy');
+    Route::get('/data-admin/detai/json', [DataAdminController::class, 'detailJson'])->name('data-admin.detail-json');
 });
 
 Route::get('migrate-db', function () {
+
+    \Illuminate\Support\Facades\Artisan::call('migrate');
+
+    dd("Database migrated successfully.");
+
+});
+Route::get('migrate-db-fresh', function () {
 
     \Illuminate\Support\Facades\Artisan::call('migrate');
 

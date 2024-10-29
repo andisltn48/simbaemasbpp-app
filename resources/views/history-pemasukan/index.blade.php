@@ -26,6 +26,7 @@
                       <thead>
                         <tr>
                             <th>No</th>
+                            <th>Nama Nasabah</th>
                             <th>Nama Sampah</th>
                             <th>Harga</th>
                             <th>Jumlah</th>
@@ -40,15 +41,16 @@
                       <tbody>
                         @foreach ($histories as $history)
                         @php
-                            $tanggal = new DateTime($history->created_at);
+                            $tanggal = new DateTime($history['created_at']);
                             $tanggal = $tanggal->format('Y-m-d');
                         @endphp
                         <tr>
                             <td>{{$no++}}</td>
-                            <td>{{$history->nama_sampah}}</td>
-                            <td>{{'Rp ' . number_format($history->harga, 0, ',', '.')}}</td>
-                            <td>{{$history->jumlah_beli}}</td>
-                            <td>{{'Rp ' . number_format($history->total_harga, 0, ',', '.')}}</td>
+                            <td>{{$history['nama_nasabah']}}</td>
+                            <td>{{$history['nama_sampah']}}</td>
+                            <td>{{'Rp ' . number_format($history['harga'], 0, ',', '.')}}</td>
+                            <td>{{$history['jumlah_beli']}}</td>
+                            <td>{{'Rp ' . number_format($history['total_harga'], 0, ',', '.')}}</td>
                             <td>{{$tanggal}}</td>
                             {{-- <td class="">
                                 <a 

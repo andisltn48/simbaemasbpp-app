@@ -86,6 +86,15 @@
                       </select>
                     </div>
                     <div class="form-group">
+                      <label>Nama Nasabah</label>
+                      <select name="id_nasabah" class="form-control select-nasabah">
+                        <option value="">Pilih Nasabah</option>
+                        @foreach ($data_nasabah as $nasabah)
+                            <option value="{{$nasabah->id}}">{{$nasabah->nama}}</option>
+                        @endforeach
+                      </select>
+                    </div>
+                    <div class="form-group">
                       <label>Harga</label>
                       <input type="text" class="form-control" readonly id="harga">
                     </div>

@@ -281,21 +281,32 @@
             <li class="dropdown {{ Request::is('/') ? 'active' : '' }}">
               <a href="/" class="nav-link"><i class="fas fa-home"></i><span>Dashboard</span></a>
             </li>
-            <li class="dropdown {{ Request::is('data-sampah', 'data-sampah/*') ? 'active' : '' }}">
-              <a href="{{route('data-sampah.index')}}" class="nav-link"><i class="fas fa-recycle"></i><span>Data Sampah</span></a>
-            </li>
-            
-            <li class="dropdown {{ Request::is('data-nasabah', 'data-nasabah/*') ? 'active' : '' }}">
-              <a href="{{route('data-nasabah.index')}}" class="nav-link"><i class="fas fa-users"></i><span>Nasabah</span></a>
-            </li>
+            @if (in_array(Auth::user()->role, ['admin', 'master_admin']))
+              @if (Auth::user()->role == 'master_admin')
+                  
+              <li class="dropdown {{ Request::is('data-sampah', 'data-sampah/*') ? 'active' : '' }}">
+                <a href="{{route('data-sampah.index')}}" class="nav-link"><i class="fas fa-recycle"></i><span>Data Sampah</span></a>
+              </li>
+              @endif
+              
+              <li class="dropdown {{ Request::is('data-nasabah', 'data-nasabah/*') ? 'active' : '' }}">
+                <a href="{{route('data-nasabah.index')}}" class="nav-link"><i class="fas fa-users"></i><span>Nasabah</span></a>
+              </li>
 
-            <li class="dropdown {{ Request::is('history-pemasukan', 'history-pemasukan/*', 'history-pengeluaran', 'history-pengeluaran/*') ? 'active' : '' }}">
-              <a href="#" class="nav-link has-dropdown"><i class="fas fa-history"></i><span>History</span></a>
-              <ul class="dropdown-menu">
-                <li class="{{ Request::is('history-pemasukan', 'history-pemasukan/*') ? 'active' : '' }}"><a class="nav-link" href="{{route('data-sampah.index-pemasukan')}}">History Pemasukan</a></li>
-                <li class="{{ Request::is('history-pengeluaran', 'history-pengeluaran/*') ? 'active' : '' }}"><a class="nav-link" href="{{route('data-sampah.index-pengeluaran')}}">History Pengeluaran</a></li>
-              </ul>
-            </li>
+              @if (Auth::user()->role == 'master_admin')
+              <li class="dropdown {{ Request::is('data-admin', 'data-admin/*') ? 'active' : '' }}">
+                <a href="{{route('data-admin.index')}}" class="nav-link"><i class="fas fa-users"></i><span>Data Admin</span></a>
+              </li>
+              @endif
+
+              <li class="dropdown {{ Request::is('history-pemasukan', 'history-pemasukan/*', 'history-pengeluaran', 'history-pengeluaran/*') ? 'active' : '' }}">
+                <a href="#" class="nav-link has-dropdown"><i class="fas fa-history"></i><span>History</span></a>
+                <ul class="dropdown-menu">
+                  <li class="{{ Request::is('history-pemasukan', 'history-pemasukan/*') ? 'active' : '' }}"><a class="nav-link" href="{{route('data-sampah.index-pemasukan')}}">History Pemasukan</a></li>
+                  <li class="{{ Request::is('history-pengeluaran', 'history-pengeluaran/*') ? 'active' : '' }}"><a class="nav-link" href="{{route('data-sampah.index-pengeluaran')}}">History Pengeluaran</a></li>
+                </ul>
+              </li>
+            @endif
           </ul>
 
          

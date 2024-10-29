@@ -1,4 +1,4 @@
-<x-app-layout title="Nasabah">
+<x-app-layout title="Manajemen Admin">
     <style>
         .btn-create {
             width: 10em;
@@ -10,11 +10,11 @@
     </style>
     <section class="section">
         <div class="section-header">
-          <h1>Nasabah</h1>
+          <h1>Manajamen Admin</h1>
           <div class="section-header-breadcrumb">
             <div class="breadcrumb-item active"><a href="/">Dashboard</a></div>
             {{-- <div class="breadcrumb-item"><a href="#">Components</a></div> --}}
-            <div class="breadcrumb-item">Nasabah</div>
+            <div class="breadcrumb-item">Manajamen Admin</div>
           </div>
         </div>
 
@@ -34,9 +34,8 @@
                       <thead>
                         <tr>
                             <th>No</th>
-                            <th>Nama Nasabah</th>
-                            <th>Alamat</th>
-                            <th>Saldo</th>
+                            <th>Nama</th>
+                            <th>Email</th>
                             <th>Action</th>
                         </tr>
                       </thead>
@@ -44,24 +43,23 @@
                           $no = 1;
                       @endphp
                       <tbody>
-                        @foreach ($data_nasabah as $nasabah)
+                        @foreach ($data_admin as $admin)
                           
                         <tr>
                             <td>{{$no++}}</td>
-                            <td>{{$nasabah->nama}}</td>
-                            <td>{{$nasabah->alamat}}</td>
-                            <td>{{'Rp ' . number_format($nasabah->saldo, 0, ',', '.')}}</td>
+                            <td>{{$admin->name}}</td>
+                            <td>{{$admin->email}}</td>
                             <td class="">
                                 @if (Auth::user()->role === 'master_admin')
                                 <a 
                                 data-toggle="modal" 
                                 data-target="#editModal" 
-                                data-id="{{ $nasabah->id }}"
-                                data-link="{{ route('data-nasabah.update', $nasabah->id) }}"
+                                data-id="{{ $admin->id }}"
+                                data-link="{{ route('data-admin.update', $admin->id) }}"
                                 class="btn-edit col">
                                 <i class="fas fa-pen" style="color: #FFD43B;"></i>
                                 </a>
-                                <a href="" class="col" id="btn-delete" data-confirm="Hapus data|Data yang sudah dihapus tidak bisa dikembalikan" data-confirm-yes="window.location.href='{{ route('data-nasabah.destroy', $nasabah->id) }}'">
+                                <a href="" class="col" id="btn-delete" data-confirm="Hapus data|Data yang sudah dihapus tidak bisa dikembalikan" data-confirm-yes="window.location.href='{{ route('data-admin.destroy', $admin->id) }}'">
                                     <i class="fas fa-trash" style="color: red;"></i>
                                 </a>
                                 @endif
@@ -80,25 +78,17 @@
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-            <h5 class="modal-title">Tambah Nasabah</h5>
+            <h5 class="modal-title">Tambah Admin</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
             </div>
-            <form action="{{route('data-nasabah.store')}}" method="post">
+            <form action="{{route('data-admin.store')}}" method="post">
                 @csrf
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="name">Nama Nasabah</label>
-                        <input type="text" name="nama" class="form-control" id="name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="alamat">Alamat</label>
-                        <input type="text" name="alamat" class="form-control" id="alamat" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="saldo">Saldo</label>
-                        <input type="text" name="saldo" oninput="onInputChange(event)" class="form-control" id="saldo">
+                        <label for="name">Nama</label>
+                        <input type="text" name="name" class="form-control" id="name" required>
                     </div>
                     <div class="form-group">
                         <label for="email">Email</label>
@@ -122,7 +112,7 @@
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title">Edit Data Nasabah</h5>
+              <h5 class="modal-title">Edit Data Admin</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -131,16 +121,8 @@
                 @csrf
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="name-edit">Nama Nasabah</label>
-                        <input type="text" name="nama" class="form-control" id="name-edit" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="alamat-edit">Alamat</label>
-                        <input type="text" name="alamat" class="form-control" id="alamat-edit" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="saldo-edit">Saldo</label>
-                        <input type="text" name="saldo" oninput="onInputChange(event)" class="form-control" id="saldo-edit">
+                        <label for="name-edit">Nama</label>
+                        <input type="text" name="name" class="form-control" id="name-edit" required>
                     </div>
                     <div class="form-group">
                         <label for="email-edit">Email</label>
@@ -194,13 +176,9 @@
                 data: {
                     id: id
                 },
-                url: "{{ route('data-nasabah.detail-json') }}",
+                url: "{{ route('data-admin.detail-json') }}",
             }).done(function(response) {
-                $("#name-edit").val(response.nasabah.nama);
-                $("#alamat-edit").val(response.nasabah.alamat);
-
-                var saldo = formatRupiah(response.nasabah.saldo);   
-                $("#saldo-edit").val(saldo);
+                $("#name-edit").val(response.user.name);
 
                 $("#email-edit").val(response.user.email);
             });

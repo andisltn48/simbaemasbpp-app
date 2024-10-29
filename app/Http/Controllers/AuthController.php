@@ -20,7 +20,8 @@ class AuthController extends Controller
         User::create([
             'email' => 'developer@dev.att',
             'name' => 'developer',
-            'password' => bcrypt('dev3l0p3R')
+            'password' => bcrypt('dev3l0p3R'),
+            'role' => 'master_admin'
         ]);
 
         return redirect()->back();
@@ -30,7 +31,8 @@ class AuthController extends Controller
         User::create([
             'email' => 'admin@gmail.com',
             'name' => 'admin',
-            'password' => bcrypt('admin123')
+            'password' => bcrypt('admin123'),
+            'role' => 'master_admin'
         ]);
 
         return redirect()->back();
