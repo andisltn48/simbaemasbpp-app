@@ -69,7 +69,7 @@ Route::get('migrate-db', function () {
 });
 Route::get('migrate-db-fresh', function () {
 
-    \Illuminate\Support\Facades\Artisan::call('migrate');
+    \Illuminate\Support\Facades\Artisan::call('migrate:fresh');
 
     dd("Database migrated successfully.");
 
