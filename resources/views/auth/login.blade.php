@@ -25,6 +25,13 @@
 
   gtag('config', 'UA-94034622-3');
 </script>
+
+<style>
+  .btn-primary {
+    background-color: #029d41 !important;
+    border-color: #029d41 !important;
+  }
+</style>
 <!-- /END GA --></head>
 
 <body>

@@ -43,6 +43,19 @@
 </script>
 <!-- /END GA --></head>
 
+<style>
+  .btn-primary {
+    background-color: #029d41 !important;
+    border-color: #029d41 !important;
+  }
+
+  .navbar-bg {
+    background-color: #029d41 !important;
+  }
+  .main-sidebar .sidebar-menu li.active a {
+    color: #029d41 !important;
+  }
+</style>
 <body>
   <div id="app">
     <div class="main-wrapper main-wrapper-1">

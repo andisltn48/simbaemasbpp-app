@@ -27,6 +27,12 @@
 </script>
 <!-- /END GA --></head>
 
+<style>
+  .btn-primary {
+    background-color: #029d41 !important;
+    border-color: #029d41 !important;
+  }
+</style>
 <body>
   <div id="app">
     <section class="section">
