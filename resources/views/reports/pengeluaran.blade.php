@@ -26,7 +26,7 @@
         <td>{{$history['nama_nasabah']}}</td>
         <td>{{$history['nama_sampah']}}</td>
         <td>{{'Rp ' . number_format($history['harga'], 0, ',', '.')}}</td>
-        <td>{{$history['jumlah_beli']}}</td>
+        <td>{{$history['jumlah_jual']}}</td>
         <td>{{'Rp ' . number_format($history['total_harga'], 0, ',', '.')}}</td>
         <td>{{$tanggal}}</td>
       </tr>
