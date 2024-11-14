@@ -21,6 +21,29 @@
         <div class="section-body">
             <div class="card">
                 <div class="card-body p-3">
+                  
+                  <div class="form-group">
+                    <label>Filter Tanggal</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <div class="input-group-text">
+                          <i class="fas fa-calendar"></i>
+                        </div>
+                      </div>
+                      <input type="text" class="form-control daterange-pengeluaran">
+                      <div class="input-group-prepend">
+                        <div class="input-group-text">
+                          <a href="{{route('data-sampah.index-pengeluaran')}}"><i class="fas fa-undo"></i></a>
+                        </div>
+                      </div>
+                      
+                      <div class="input-group-prepend">
+                        <div class="input-group-text">
+                          <a href="{{route('data-sampah.pdf-pengeluaran')}}?start={{$startDate}}&end={{$endDate}}">Export PDF</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                   <div class="table-responsive">
                     <table class="table " id="dataTable">
                       <thead>
@@ -77,5 +100,28 @@
     </section>
     <script>
         new DataTable('#dataTable');
+    </script>
+    <script>
+      var picker = $('.daterange-pengeluaran').daterangepicker({
+        locale: {format: 'YYYY-MM-DD'},
+        drops: 'down',
+        opens: 'right'
+      });
+
+    // Set the start and end date
+      var startDate = "{{$startDate}}";
+      var endDate = "{{$endDate}}";
+      var rangeDate = startDate + ' - ' + endDate;
+      $('.daterange-pengeluaran').val(rangeDate);
+      $('.daterange-pengeluaran').on('apply.daterangepicker', function(ev, picker) {
+        // The 'picker' object contains the startDate and endDate
+        var startDate = picker.startDate.format('YYYY-MM-DD');
+        var endDate = picker.endDate.format('YYYY-MM-DD');
+        
+        // Do something with the selected date range
+        // Example action: Display selected dates in an alert
+        // alert('You selected: ' + startDate + ' to ' + endDate);
+        window.location.href = "{{ route('data-sampah.index-pengeluaran') }}?start=" + startDate + "&end=" + endDate;
+    });
     </script>
 </x-app-layout>

@@ -6,7 +6,9 @@ use App\Models\DataSampah;
 use App\Models\HistoryPembelian;
 use App\Models\HistoryPenjualan;
 use App\Models\Nasabah;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class DataSampahController extends Controller
 {
@@ -78,8 +80,23 @@ class DataSampahController extends Controller
         return redirect()->route('dashboard.index');
     }
 
-    public function indexHistoryPemasukan() {
+
+    public function indexHistoryPemasukan(Request $request) {
+        $startDate = $request->input('start');
+        $endDate = $request->input('end');
+
+        $data['startDate'] = $startDate;
+        $data['endDate'] = $endDate;
+
+        $startDate = Carbon::parse($startDate);
+        $endDate = Carbon::parse($endDate)->endOfDay();
+        
         $histories = HistoryPembelian::all()->sortByDesc('created_at');
+        $formData = [];
+        if ($request->start) {    
+            $histories = HistoryPembelian::whereBetween('created_at', [$startDate, $endDate])->get()->sortByDesc('created_at');
+        }
+        
         foreach ($histories as $key => $value) {
             $history = $value->toArray();
             $history['nama_nasabah'] = Nasabah::find($history['id_nasabah'])->nama;
@@ -106,9 +123,20 @@ class DataSampahController extends Controller
         return redirect()->route('dashboard.index');
     }
 
-    public function indexHistoryPengeluaran() {
+    public function indexHistoryPengeluaran(Request $request) {
+        $startDate = $request->input('start');
+        $endDate = $request->input('end');
+
+        $data['startDate'] = $startDate;
+        $data['endDate'] = $endDate;
+
+        $startDate = Carbon::parse($startDate);
+        $endDate = Carbon::parse($endDate)->endOfDay();
         $histories = HistoryPenjualan::all()->sortByDesc('created_at');
         $formData = [];
+        if ($request->start) {    
+            $histories = HistoryPenjualan::whereBetween('created_at', [$startDate, $endDate])->get()->sortByDesc('created_at');
+        }
         foreach ($histories as $key => $value) {
             $history = $value->toArray();
             $history['nama_nasabah'] = Nasabah::find($history['id_nasabah'])->nama;
@@ -129,5 +157,86 @@ class DataSampahController extends Controller
         
         // Convert to integer
         return (int)$number;
+    }
+
+    public function pdfHistoryPemasukan(Request $request) {
+        $startDate = $request->input('start');
+        $endDate = $request->input('end');
+
+        $data['startDate'] = $startDate;
+        $data['endDate'] = $endDate;
+
+        $startDate = Carbon::parse($startDate);
+        $endDate = Carbon::parse($endDate)->endOfDay();
+        
+        $histories = HistoryPembelian::all()->sortByDesc('created_at');
+        $formData = [];
+        $tanggalExport = $request->input('start').' s/d '.$request->input('end');
+        if ($request->start) {    
+            $histories = HistoryPembelian::whereBetween('created_at', [$startDate, $endDate])->get()->sortByDesc('created_at');
+        } else {
+            $tanggalExport = 'Semua';
+        }
+        
+        foreach ($histories as $key => $value) {
+            $history = $value->toArray();
+            $history['nama_nasabah'] = Nasabah::find($history['id_nasabah'])->nama;
+
+            $formData[] = $history;
+        }
+        $data['histories'] = $formData;
+        $data['title'] = 'History Pemasukan';
+        $data['fileName'] = 'History Pemasukan.pdf';
+        $data['path'] = 'reports.pemasukan';
+        $data['tanggal'] = $tanggalExport;
+
+        $pdf = $this->exportPDF($data);
+        
+        return $pdf->download($data['fileName']);
+    }
+
+    public function pdfHistoryPengeluaran(Request $request) {
+        $startDate = $request->input('start');
+        $endDate = $request->input('end');
+
+        $data['startDate'] = $startDate;
+        $data['endDate'] = $endDate;
+
+        $startDate = Carbon::parse($startDate);
+        $endDate = Carbon::parse($endDate)->endOfDay();
+        
+        $histories = HistoryPenjualan::all()->sortByDesc('created_at');
+        $formData = [];
+        $tanggalExport = $request->input('start').' s/d '.$request->input('end');
+        if ($request->start) {    
+            $histories = HistoryPenjualan::whereBetween('created_at', [$startDate, $endDate])->get()->sortByDesc('created_at');
+        } else {
+            $tanggalExport = 'Semua';
+        }
+        
+        foreach ($histories as $key => $value) {
+            $history = $value->toArray();
+            $history['nama_nasabah'] = Nasabah::find($history['id_nasabah'])->nama;
+
+            $formData[] = $history;
+        }
+        $data['histories'] = $formData;
+        $data['title'] = 'History Penjualan';
+        $data['fileName'] = 'History Penjualan.pdf';
+        $data['path'] = 'reports.pengeluaran';
+        $data['tanggal'] = $tanggalExport;
+
+        $pdf = $this->exportPDF($data);
+        
+        return $pdf->download($data['fileName']);
+    }
+
+    public function exportPDF($data)
+    {
+        // Load the view and pass the data to it
+        $pdf = Pdf::loadView($data['path'], $data)->setPaper('a4', 'landscape');;
+        
+        // Return the PDF as a download
+        return $pdf;
     }
 }

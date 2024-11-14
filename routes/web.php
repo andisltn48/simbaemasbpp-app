@@ -44,6 +44,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/history-pemasukan', [DataSampahController::class, 'indexHistoryPemasukan'])->name('data-sampah.index-pemasukan');
     Route::post('/submit-penjualan', [DataSampahController::class, 'submitPenjualan'])->name('data-sampah.submit-penjualan');
     Route::get('/history-pengeluaran', [DataSampahController::class, 'indexHistoryPengeluaran'])->name('data-sampah.index-pengeluaran');
+    Route::get('/history-pemasukan/pdf', [DataSampahController::class, 'pdfHistoryPemasukan'])->name('data-sampah.pdf-pemasukan');
+    Route::get('/history-pengeluaran/pdf', [DataSampahController::class, 'pdfHistoryPengeluaran'])->name('data-sampah.pdf-pengeluaran');
 
     //data nasabah
     Route::get('/data-nasabah', [DataNasabahController::class, 'index'])->name('data-nasabah.index');

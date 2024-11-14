@@ -18,6 +18,11 @@
   <link rel="stylesheet" href="assets/modules/owlcarousel2/dist/assets/owl.carousel.min.css">
   <link rel="stylesheet" href="assets/modules/owlcarousel2/dist/assets/owl.theme.default.min.css">
 
+  <link rel="stylesheet" href="assets/modules/bootstrap-daterangepicker/daterangepicker.css">
+  <link rel="stylesheet" href="assets/modules/bootstrap-colorpicker/dist/css/bootstrap-colorpicker.min.css">
+  <link rel="stylesheet" href="assets/modules/bootstrap-timepicker/css/bootstrap-timepicker.min.css">
+
+
   <!-- Template CSS -->
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/components.css">
@@ -31,7 +36,13 @@
 
   {{-- select2 --}}
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>  
+  
+  
+  <script src="assets/modules/moment.min.js"></script>
+  <script src="assets/modules/bootstrap-daterangepicker/daterangepicker.js"></script>
+  <script src="assets/modules/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js"></script>
+  <script src="assets/modules/bootstrap-timepicker/js/bootstrap-timepicker.min.js"></script>
 <!-- Start GA -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-94034622-3"></script>
 <script>
@@ -343,12 +354,12 @@
   </div>
 
   <!-- General JS Scripts -->
+  
   <script src="assets/modules/jquery.min.js"></script>
   <script src="assets/modules/popper.js"></script>
   <script src="assets/modules/tooltip.js"></script>
   <script src="assets/modules/bootstrap/js/bootstrap.min.js"></script>
   <script src="assets/modules/nicescroll/jquery.nicescroll.min.js"></script>
-  <script src="assets/modules/moment.min.js"></script>
   <script src="assets/js/stisla.js"></script>
   
   <!-- JS Libraies -->
