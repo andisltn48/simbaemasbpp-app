@@ -69,6 +69,7 @@ class DataSampahController extends Controller
             'total_harga' => $this->convertRupiahToInteger($request->total_harga),
         ];
 
+        $pembelian = HistoryPembelian::create($formData);
         $dataNasabah = Nasabah::find($request->id_nasabah);
         $totalHargaJual = $this->convertRupiahToInteger($request->total_harga_jual);
         $formDataPenjualan = [
@@ -78,6 +79,7 @@ class DataSampahController extends Controller
             'id_nasabah' => $request->id_nasabah,
             'jumlah_jual' => $request->jumlah_beli,
             'total_harga' => $totalHargaJual,
+            'id_pembelian' => $pembelian->id,
         ];
 
         $percentage = 70;
@@ -88,7 +90,6 @@ class DataSampahController extends Controller
             'saldo' => $totalSaldoNasabah
         ]);
 
-        HistoryPembelian::create($formData);
         HistoryPenjualan::create($formDataPenjualan);
 
         return redirect()->route('dashboard.index');
