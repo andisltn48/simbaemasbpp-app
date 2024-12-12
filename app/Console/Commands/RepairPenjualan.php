@@ -42,7 +42,7 @@ class RepairPenjualan extends Command
                     'harga' => $this->convertRupiahToInteger($dataSampah->harga_jual),
                     'id_nasabah' => $pembelian->id_nasabah,
                     'jumlah_jual' => $pembelian->jumlah_beli,
-                    'total_harga' => $totalHargaJual,
+                    'total_harga' => $totalHargaJual * $pembelian->jumlah_beli,
                     'id_pembelian' => $pembelian->id,
                     'created_at' => $pembelian->created_at,
                     'updated_at' => $pembelian->updated_at
