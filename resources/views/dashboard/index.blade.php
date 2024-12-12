@@ -83,7 +83,7 @@
           </div>                  
         </div>
         <div class="row">
-            <div class="col-12 col-md-6 col-lg-6">
+            <div class="col">
               <div class="card">
                 <form method="post" action="{{route('data-sampah.submit-pembelian')}}">
                   @csrf
@@ -112,8 +112,12 @@
                       </select>
                     </div>
                     <div class="form-group">
-                      <label>Harga</label>
+                      <label>Harga Beli</label>
                       <input type="text" class="form-control" readonly id="harga">
+                    </div>
+                    <div class="form-group">
+                      <label>Harga Jual</label>
+                      <input type="text" class="form-control" readonly id="harga-penjualan">
                     </div>
                     <div class="form-group">
                       <label>Satuan</label>
@@ -124,8 +128,12 @@
                       <input name="jumlah_beli" class="form-control" type="number" required oninput="onInputChange(event)">
                     </div>
                     <div class="form-group">
-                      <label>Total Harga</label>
+                      <label>Total Harga Beli</label>
                       <input name="total_harga" class="form-control" type="text" readonly id="total-harga">
+                    </div>
+                    <div class="form-group">
+                      <label>Total Harga Jual</label>
+                      <input name="total_harga_jual" class="form-control" type="text" readonly id="total-harga-penjualan">
                     </div>
                   </div>
                   <div class="card-footer text-right">
@@ -134,7 +142,7 @@
                 </form>
               </div>
             </div>
-            <div class="col-12 col-md-6 col-lg-6">
+            {{-- <div class="col-12 col-md-6 col-lg-6">
               <div class="card">
                 <form method="post" action="{{route('data-sampah.submit-penjualan')}}">
                   @csrf
@@ -185,7 +193,7 @@
                 </form>
                 </div>
               </div>
-            </div>
+            </div> --}}
         </div>
     </section>
     <script>
@@ -210,6 +218,7 @@
                 url: "{{ route('data-sampah.detail-json') }}",
             }).done(function(response) {
                 $("#harga").val(formatRupiah(response.sampah.harga_beli));
+                $("#harga-penjualan").val(formatRupiah(response.sampah.harga_jual));
                 $("#satuan").val(response.sampah.satuan);
             });
 
@@ -238,6 +247,11 @@
             const harga = convertRupiahToInteger($("#harga").val());
             const totalHarga = harga * inputField.value;
             $("#total-harga").val(formatRupiah(totalHarga));
+
+            
+            const hargaJual = convertRupiahToInteger($("#harga-penjualan").val());
+            const totalHargaJual = hargaJual * inputField.value;
+            $("#total-harga-penjualan").val(formatRupiah(totalHargaJual));
         }
 
         function onInputChangePenjualan(event) {

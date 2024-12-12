@@ -41,11 +41,11 @@ Route::group(['middleware' => ['auth']], function () {
 
     //history
     Route::post('/submit-pembelian', [DataSampahController::class, 'submitPembelian'])->name('data-sampah.submit-pembelian');
-    Route::get('/history-pemasukan', [DataSampahController::class, 'indexHistoryPemasukan'])->name('data-sampah.index-pemasukan');
+    Route::get('/history-transaksi', [DataSampahController::class, 'indexHistoryTransaksi'])->name('data-sampah.index-pemasukan');
     Route::post('/submit-penjualan', [DataSampahController::class, 'submitPenjualan'])->name('data-sampah.submit-penjualan');
-    Route::get('/history-pengeluaran', [DataSampahController::class, 'indexHistoryPengeluaran'])->name('data-sampah.index-pengeluaran');
-    Route::get('/history-pemasukan/pdf', [DataSampahController::class, 'pdfHistoryPemasukan'])->name('data-sampah.pdf-pemasukan');
-    Route::get('/history-pengeluaran/pdf', [DataSampahController::class, 'pdfHistoryPengeluaran'])->name('data-sampah.pdf-pengeluaran');
+    Route::get('/history-sampah', [DataSampahController::class, 'indexHistorySampah'])->name('data-sampah.index-pengeluaran');
+    Route::get('/history-transaksi/pdf', [DataSampahController::class, 'pdfHistoryPemasukan'])->name('data-sampah.pdf-pemasukan');
+    Route::get('/history-sampah/pdf', [DataSampahController::class, 'pdfHistoryPengeluaran'])->name('data-sampah.pdf-pengeluaran');
 
     //data nasabah
     Route::get('/data-nasabah', [DataNasabahController::class, 'index'])->name('data-nasabah.index');
