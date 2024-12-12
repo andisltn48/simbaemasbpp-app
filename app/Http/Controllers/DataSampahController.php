@@ -123,7 +123,7 @@ class DataSampahController extends Controller
             $history['total_harga_jual'] = $penjualan ? $penjualan->total_harga : 0;
             $history['jumlah_jual'] = $penjualan ? $penjualan->jumlah_jual : 0;
             $history['harga_jual'] = $penjualan ? $penjualan->harga_jual : 0;
-            $history['laba'] = $history['total_harga_jual'] - $history['total_harga'];
+            $history['laba'] = $penjualan ? $history['total_harga_jual'] - $history['total_harga'] : 0;
             $history['pendapatan_nasabah'] = ($persentaseNasabah / 100) * $history['total_harga_jual'];
             $history['pendapatan_pengurus1'] = ($persentasePengurus1 / 100) * $history['total_harga_jual'];
             $history['pendapatan_pengurus2'] = ($persentasePengurus2 / 100) * $history['total_harga_jual'];

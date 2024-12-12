@@ -76,6 +76,13 @@ Route::get('migrate-db-fresh', function () {
     dd("Database migrated successfully.");
 
 });
+Route::get('repair-data-penjualan', function () {
+
+    \Illuminate\Support\Facades\Artisan::call('repair-penjualan');
+
+    dd("Database migrated successfully.");
+
+});
 
 Route::get('clear-config', function () {
     \Illuminate\Support\Facades\Artisan::call('view:clear');
