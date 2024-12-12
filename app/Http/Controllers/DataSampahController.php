@@ -122,7 +122,7 @@ class DataSampahController extends Controller
             $penjualan = HistoryPenjualan::where('id_pembelian', $history['id'])->first();
             $history['total_harga_jual'] = $penjualan ? $penjualan->total_harga : 0;
             $history['jumlah_jual'] = $penjualan ? $penjualan->jumlah_jual : 0;
-            $history['harga_jual'] = $penjualan ? $penjualan->harga_jual : 0;
+            $history['harga_jual'] = $penjualan ? $penjualan->harga : 0;
             $history['laba'] = $penjualan ? $history['total_harga_jual'] - $history['total_harga'] : 0;
             $history['pendapatan_nasabah'] = ($persentaseNasabah / 100) * $history['total_harga_jual'];
             $history['pendapatan_pengurus1'] = ($persentasePengurus1 / 100) * $history['total_harga_jual'];
