@@ -1,14 +1,21 @@
 <div class="table-responsive">
-  <h3 class="text-center">Laporan Pengeluaran - ({{$tanggal}})</h3>
+  <h3 class="text-center">Laporan Pemasukan - ({{$tanggal}})</h3>
   <table class="table table-bordered table-striped" id="dataTable">
     <thead class="thead-dark">
       <tr>
         <th>No</th>
         <th>Nama Nasabah</th>
         <th>Nama Sampah</th>
-        <th>Harga</th>
-        <th>Jumlah</th>
-        <th>Total</th>
+        <th>Harga Beli</th>
+        <th>Jumlah Beli</th>
+        <th>Total Harga Beli</th>
+        <th>Harga Jual</th>
+        <th>Jumlah Jual</th>
+        <th>Total Harga Jual</th>
+        <th>Laba</th>
+        <th>Pendapatan Nasabah</th>
+        <th>Pendapatan Pengurus 1</th>
+        <th>Pendapatan Pengurus 2</th>
         <th>Tanggal Transaksi</th>
       </tr>
     </thead>
@@ -22,13 +29,20 @@
           $tanggal = $tanggal->format('Y-m-d');
       @endphp
       <tr>
-        <td>{{$no++}}</td>
-        <td>{{$history['nama_nasabah']}}</td>
-        <td>{{$history['nama_sampah']}}</td>
-        <td>{{'Rp ' . number_format($history['harga'], 0, ',', '.')}}</td>
-        <td>{{$history['jumlah_jual']}}</td>
-        <td>{{'Rp ' . number_format($history['total_harga'], 0, ',', '.')}}</td>
-        <td>{{$tanggal}}</td>
+          <td>{{$no++}}</td>
+          <td>{{$history['nama_nasabah']}}</td>
+          <td>{{$history['nama_sampah']}}</td>
+          <td>{{'Rp ' . number_format($history['harga'], 0, ',', '.')}}</td>
+          <td>{{$history['jumlah_beli']}}</td>
+          <td>{{'Rp ' . number_format($history['total_harga'], 0, ',', '.')}}</td>
+          <td>{{'Rp ' . number_format($history['harga_jual'], 0, ',', '.')}}</td>
+          <td>{{$history['jumlah_jual']}}</td>
+          <td>{{'Rp ' . number_format($history['total_harga_jual'], 0, ',', '.')}}</td>
+          <td>{{'Rp ' . number_format($history['laba'], 0, ',', '.')}}</td>
+          <td>{{'Rp ' . number_format($history['pendapatan_nasabah'], 0, ',', '.')}}</td>
+          <td>{{'Rp ' . number_format($history['pendapatan_pengurus1'], 0, ',', '.')}}</td>
+          <td>{{'Rp ' . number_format($history['pendapatan_pengurus2'], 0, ',', '.')}}</td>
+          <td>{{$tanggal}}</td>
       </tr>
       @endforeach
     </tbody>

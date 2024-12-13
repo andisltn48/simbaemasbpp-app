@@ -7,6 +7,31 @@
         .center-btn {
             text-align: center;
         }
+
+        /* Initially show the div */
+        .showonmobile {
+            display: none;
+        }
+
+        /* Hide div on smaller screens (e.g., 600px or less) */
+        @media (max-width: 600px) {
+            .showonweb {
+                display: none;
+            }
+            .showonmobile {
+                display: block;
+                overflow-x: hidden;  /* Hide horizontal scroll */
+                width: 100%; /* Ensure the container takes the full width */
+            }
+        }
+
+        /* Show div on larger screens (e.g., more than 600px) */
+        @media (min-width: 601px) {
+            
+            .showonmobile {
+                display: none;
+            }
+        }
     </style>
     <section class="section">
         <div class="section-header">
@@ -27,8 +52,8 @@
                 </div>
                 
                 <div class="card-body p-3">
-                  <div class="table-responsive">
-                    <table class="table " id="dataTable">
+                  <div class="table-responsive showonweb">
+                    <table class="table" id="dataTable">
                       <thead>
                         <tr>
                             <th>No</th>
@@ -67,6 +92,26 @@
                         </tr>
                       @endforeach
                       </tbody>
+                    </table>
+                  </div>
+                  <div class="table-responsive showonmobile">
+                    <table class="table" id="dataTableOnMobile">
+                        <thead>
+                            <tr>
+                                <th>Nama Sampah & Harga Beli</th>
+                            </tr>
+                        </thead>
+                        @php
+                            $no = 1;
+                        @endphp
+                        <tbody>
+                            @foreach ($data_sampah as $sampah)
+                            
+                            <tr>
+                                <td>{{$sampah->nama_sampah}} | {{'Rp ' . number_format($sampah->harga_beli, 0, ',', '.')}}</td>
+                            </tr>
+                        @endforeach
+                        </tbody>
                     </table>
                   </div>
                 </div>
@@ -151,6 +196,7 @@
     </div>
     <script>
         new DataTable('#dataTable');
+        new DataTable('#dataTableOnMobile');
 
         function formatRupiah(angka) {
             let numberString = angka.toString().replace(/[^,\d]/g, '').toString();

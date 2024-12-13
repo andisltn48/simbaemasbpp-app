@@ -1,34 +1,31 @@
 <div class="table-responsive">
-  <h3 class="text-center">Laporan Pemasukan - ({{$tanggal}})</h3>
+  <h3 class="text-center">Laporan Pengeluaran - ({{$tanggal}})</h3>
   <table class="table table-bordered table-striped" id="dataTable">
     <thead class="thead-dark">
       <tr>
         <th>No</th>
-        <th>Nama Nasabah</th>
         <th>Nama Sampah</th>
-        <th>Harga</th>
-        <th>Jumlah</th>
-        <th>Total</th>
-        <th>Tanggal Transaksi</th>
+        <th>Jumlah Beli (Kg)</th>
+        <th>Jumlah Jual (Kg)</th>
+        <th>Total Harga Beli</th>
+        <th>Total Harga Jual</th>
+        <th>Total Laba</th>
       </tr>
     </thead>
     @php
         $no = 1;
     @endphp
     <tbody>
-      @foreach ($histories as $history)
-      @php
-          $tanggal = new DateTime($history['created_at']);
-          $tanggal = $tanggal->format('Y-m-d');
-      @endphp
+      @foreach ($histories as $key => $history)
+      
       <tr>
         <td>{{$no++}}</td>
-        <td>{{$history['nama_nasabah']}}</td>
-        <td>{{$history['nama_sampah']}}</td>
-        <td>{{'Rp ' . number_format($history['harga'], 0, ',', '.')}}</td>
+        <td>{{$key}}</td>
         <td>{{$history['jumlah_beli']}}</td>
-        <td>{{'Rp ' . number_format($history['total_harga'], 0, ',', '.')}}</td>
-        <td>{{$tanggal}}</td>
+        <td>{{$history['jumlah_jual']}}</td>
+        <td>{{'Rp ' . number_format($history['total_harga_beli'], 0, ',', '.')}}</td>
+        <td>{{'Rp ' . number_format($history['total_harga_jual'], 0, ',', '.')}}</td>
+        <td>{{'Rp ' . number_format($history['laba'], 0, ',', '.')}}</td>
       </tr>
       @endforeach
     </tbody>

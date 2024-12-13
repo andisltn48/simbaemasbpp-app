@@ -219,16 +219,27 @@ class DataSampahController extends Controller
             $tanggalExport = 'Semua';
         }
         
+        $persentaseNasabah = 70;
+        $persentasePengurus1 = 10;
+        $persentasePengurus2 = 20;
+
         foreach ($histories as $key => $value) {
             $history = $value->toArray();
             $history['nama_nasabah'] = Nasabah::find($history['id_nasabah'])->nama;
-
+            $penjualan = HistoryPenjualan::where('id_pembelian', $history['id'])->first();
+            $history['total_harga_jual'] = $penjualan ? $penjualan->total_harga : 0;
+            $history['jumlah_jual'] = $penjualan ? $penjualan->jumlah_jual : 0;
+            $history['harga_jual'] = $penjualan ? $penjualan->harga : 0;
+            $history['laba'] = $penjualan ? $history['total_harga_jual'] - $history['total_harga'] : 0;
+            $history['pendapatan_nasabah'] = ($persentaseNasabah / 100) * $history['total_harga_jual'];
+            $history['pendapatan_pengurus1'] = ($persentasePengurus1 / 100) * $history['total_harga_jual'];
+            $history['pendapatan_pengurus2'] = ($persentasePengurus2 / 100) * $history['total_harga_jual'];
             $formData[] = $history;
         }
         $data['histories'] = $formData;
-        $data['title'] = 'History Pemasukan';
-        $data['fileName'] = 'History Pemasukan.pdf';
-        $data['path'] = 'reports.pemasukan';
+        $data['title'] = 'History Transaksi';
+        $data['fileName'] = 'History Transaksi.pdf';
+        $data['path'] = 'reports.transaksi';
         $data['tanggal'] = $tanggalExport;
 
         $pdf = $this->exportPDF($data);
@@ -246,25 +257,37 @@ class DataSampahController extends Controller
         $startDate = Carbon::parse($startDate);
         $endDate = Carbon::parse($endDate)->endOfDay();
         
-        $histories = HistoryPenjualan::all()->sortByDesc('created_at');
         $formData = [];
         $tanggalExport = $request->input('start').' s/d '.$request->input('end');
-        if ($request->start) {    
-            $histories = HistoryPenjualan::whereBetween('created_at', [$startDate, $endDate])->get()->sortByDesc('created_at');
-        } else {
-            $tanggalExport = 'Semua';
+        $formData = [];
+        $dataSampah = DataSampah::all();
+        foreach ($dataSampah as $key => $sampah) {
+            $totalJumlahBeli = HistoryPembelian::where('id_sampah', $sampah->id)->sum('jumlah_beli');
+            $totalJumlahJual = HistoryPenjualan::where('id_sampah', $sampah->id)->sum('jumlah_jual');
+            $totalHarga = HistoryPembelian::where('id_sampah', $sampah->id)->sum('total_harga');
+            $totalHargaJual = HistoryPenjualan::where('id_sampah', $sampah->id)->sum('total_harga');
+            $totalLaba = $totalHargaJual - $totalHarga;
+            if ($request->start) {    
+                $totalJumlahBeli = HistoryPembelian::whereBetween('created_at', [$startDate, $endDate])->where('id_sampah', $sampah->id)->sum('jumlah_beli');
+                $totalJumlahJual = HistoryPenjualan::whereBetween('created_at', [$startDate, $endDate])->where('id_sampah', $sampah->id)->sum('jumlah_jual');
+                $totalHarga = HistoryPembelian::whereBetween('created_at', [$startDate, $endDate])->where('id_sampah', $sampah->id)->sum('total_harga');
+                $totalHargaJual = HistoryPenjualan::whereBetween('created_at', [$startDate, $endDate])->where('id_sampah', $sampah->id)->sum('total_harga');
+                $totalLaba = $totalHargaJual - $totalHarga;
+            }
+            
+            $formData[$sampah->nama_sampah] = [
+                'jumlah_beli' => $totalJumlahBeli,
+                'jumlah_jual' => $totalJumlahJual,
+                'total_harga_beli' => $totalHarga,
+                'total_harga_jual' => $totalHargaJual,
+                'laba' => $totalLaba
+            ];
         }
         
-        foreach ($histories as $key => $value) {
-            $history = $value->toArray();
-            $history['nama_nasabah'] = Nasabah::find($history['id_nasabah'])->nama;
-
-            $formData[] = $history;
-        }
         $data['histories'] = $formData;
-        $data['title'] = 'History Penjualan';
-        $data['fileName'] = 'History Penjualan.pdf';
-        $data['path'] = 'reports.pengeluaran';
+        $data['title'] = 'History Data Sampah';
+        $data['fileName'] = 'History Data Sampah.pdf';
+        $data['path'] = 'reports.data-sampah';
         $data['tanggal'] = $tanggalExport;
 
         $pdf = $this->exportPDF($data);
@@ -275,7 +298,7 @@ class DataSampahController extends Controller
     public function exportPDF($data)
     {
         // Load the view and pass the data to it
-        $pdf = Pdf::loadView($data['path'], $data)->setPaper('a4', 'landscape');;
+        $pdf = Pdf::loadView($data['path'], $data)->setPaper('a3', 'landscape');;
         
         // Return the PDF as a download
         return $pdf;
