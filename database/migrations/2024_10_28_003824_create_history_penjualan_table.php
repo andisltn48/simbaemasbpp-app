@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('id_nasabah');
             $table->string('id_pembelian');
             $table->string('nama_sampah');
-            $table->integer('jumlah_jual');
+            $table->float('jumlah_jual');
             $table->integer('harga');
             $table->integer('total_harga');
             $table->timestamps();

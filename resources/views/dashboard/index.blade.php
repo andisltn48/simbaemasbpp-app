@@ -125,7 +125,7 @@
                     </div>
                     <div class="form-group">
                       <label>Jumlah Beli</label>
-                      <input name="jumlah_beli" class="form-control" type="number" required oninput="onInputChange(event)">
+                      <input name="jumlah_beli" class="form-control" type="number" step="0.01" required oninput="onInputChange(event)">
                     </div>
                     <div class="form-group">
                       <label>Total Harga Beli</label>
@@ -245,12 +245,13 @@
             const inputField = event.target;
             const formattedValue = inputField.value;
             const harga = convertRupiahToInteger($("#harga").val());
-            const totalHarga = harga * inputField.value;
+            const totalHarga = parseInt(harga * inputField.value);
             $("#total-harga").val(formatRupiah(totalHarga));
 
             
             const hargaJual = convertRupiahToInteger($("#harga-penjualan").val());
-            const totalHargaJual = hargaJual * inputField.value;
+            const totalHargaJual = parseInt(hargaJual * inputField.value);
+            
             $("#total-harga-penjualan").val(formatRupiah(totalHargaJual));
         }
 
@@ -267,7 +268,7 @@
             let cleanedString = rupiahString.replace(/Rp\s*|\./g, '').trim();
             
             // Convert to integer
-            let amount = parseInt(cleanedString, 10);
+            let amount = parseInt(cleanedString);
             
             return amount;
         }
