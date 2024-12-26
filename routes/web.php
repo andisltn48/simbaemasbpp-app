@@ -46,6 +46,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/history-sampah', [DataSampahController::class, 'indexHistorySampah'])->name('data-sampah.index-pengeluaran');
     Route::get('/history-transaksi/pdf', [DataSampahController::class, 'pdfHistoryPemasukan'])->name('data-sampah.pdf-pemasukan');
     Route::get('/history-sampah/pdf', [DataSampahController::class, 'pdfHistoryPengeluaran'])->name('data-sampah.pdf-pengeluaran');
+    Route::get('/history-detail/json', [DataSampahController::class, 'detailJsonHistory'])->name('data-sampah.detail-history');
+    Route::get('/history-delete/{id}', [DataSampahController::class, 'destroyHistory'])->name('data-sampah.destroy-history');
 
     //data nasabah
     Route::get('/data-nasabah', [DataNasabahController::class, 'index'])->name('data-nasabah.index');
@@ -80,7 +82,12 @@ Route::get('repair-data-penjualan', function () {
 
     \Illuminate\Support\Facades\Artisan::call('repair-penjualan');
 
-    dd("Database migrated successfully.");
+
+});
+Route::get('repair-transaksi', function () {
+
+    \Illuminate\Support\Facades\Artisan::call('repair-transaksi');
+
 
 });
 

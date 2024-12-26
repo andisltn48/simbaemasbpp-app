@@ -19,7 +19,8 @@ class DataAdminController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
-            'role' => 'admin'
+            'role' => 'admin',
+            'alamat' => $request->alamat
         ]);
         return redirect()->route('data-admin.index');
     }
@@ -35,6 +36,7 @@ class DataAdminController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => $password,
+            'alamat' => $request->alamat
         ]);
         return redirect()->route('data-admin.index');
     }

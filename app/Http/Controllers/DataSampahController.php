@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\TransaksiExport;
 use App\Models\DataSampah;
 use App\Models\HistoryPembelian;
 use App\Models\HistoryPenjualan;
@@ -9,6 +10,8 @@ use App\Models\Nasabah;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DataSampahController extends Controller
 {
@@ -102,6 +105,7 @@ class DataSampahController extends Controller
 
         $data['startDate'] = $startDate;
         $data['endDate'] = $endDate;
+        $data['alamat'] = $request->input('alamat');
 
         $startDate = Carbon::parse($startDate);
         $endDate = Carbon::parse($endDate)->endOfDay();
@@ -111,25 +115,23 @@ class DataSampahController extends Controller
         if ($request->start) {    
             $histories = HistoryPembelian::whereBetween('created_at', [$startDate, $endDate])->get()->sortByDesc('created_at');
         }
-        
-        $persentaseNasabah = 70;
-        $persentasePengurus1 = 10;
-        $persentasePengurus2 = 20;
 
         foreach ($histories as $key => $value) {
+            if (isset($formData[$value->unique_key_transaction])) continue;
             $history = $value->toArray();
-            $history['nama_nasabah'] = Nasabah::find($history['id_nasabah'])->nama;
-            $penjualan = HistoryPenjualan::where('id_pembelian', $history['id'])->first();
-            $history['total_harga_jual'] = $penjualan ? $penjualan->total_harga : 0;
-            $history['jumlah_jual'] = $penjualan ? $penjualan->jumlah_jual : 0;
-            $history['harga_jual'] = $penjualan ? $penjualan->harga : 0;
-            $history['laba'] = $penjualan ? $history['total_harga_jual'] - $history['total_harga'] : 0;
-            $history['pendapatan_nasabah'] = ($persentaseNasabah / 100) * $history['total_harga_jual'];
-            $history['pendapatan_pengurus1'] = ($persentasePengurus1 / 100) * $history['total_harga_jual'];
-            $history['pendapatan_pengurus2'] = ($persentasePengurus2 / 100) * $history['total_harga_jual'];
-            $formData[] = $history;
+            $nasabah = Nasabah::find($history['id_nasabah']);
+
+            if ($request->alamat && $request->alamat != '' && $nasabah->alamat != $request->alamat) {
+                continue;
+            }
+            $history['nama_nasabah'] = $nasabah->nama;
+            $history['alamat'] = $nasabah->alamat;
+            $history['unique_key'] = $value->unique_key_transaction;
+            $formData[$value->unique_key_transaction] = $history;
         }
         $data['histories'] = $formData;
+        $data['allAlamat'] = $this->getAllAlamat();
+        $data['role'] = Auth::user()->role;
         return view('history-transaksi.index', $data);
     }
     
@@ -203,9 +205,11 @@ class DataSampahController extends Controller
     public function pdfHistoryPemasukan(Request $request) {
         $startDate = $request->input('start');
         $endDate = $request->input('end');
+        $alamat = $request->input('alamat');
 
         $data['startDate'] = $startDate;
         $data['endDate'] = $endDate;
+        $data['alamat'] = $alamat;
 
         $startDate = Carbon::parse($startDate);
         $endDate = Carbon::parse($endDate)->endOfDay();
@@ -218,14 +222,18 @@ class DataSampahController extends Controller
         } else {
             $tanggalExport = 'Semua';
         }
-        
         $persentaseNasabah = 70;
         $persentasePengurus1 = 10;
         $persentasePengurus2 = 20;
 
         foreach ($histories as $key => $value) {
             $history = $value->toArray();
-            $history['nama_nasabah'] = Nasabah::find($history['id_nasabah'])->nama;
+            $nasabah = Nasabah::find($history['id_nasabah']);
+            $history['nama_nasabah'] = $nasabah->nama; 
+            
+            if ($request->alamat && $request->alamat != '' && $nasabah->alamat != $request->alamat) {
+                continue;
+            }
             $penjualan = HistoryPenjualan::where('id_pembelian', $history['id'])->first();
             $history['total_harga_jual'] = $penjualan ? $penjualan->total_harga : 0;
             $history['jumlah_jual'] = $penjualan ? $penjualan->jumlah_jual : 0;
@@ -234,17 +242,18 @@ class DataSampahController extends Controller
             $history['pendapatan_nasabah'] = ($persentaseNasabah / 100) * $history['total_harga_jual'];
             $history['pendapatan_pengurus1'] = ($persentasePengurus1 / 100) * $history['total_harga_jual'];
             $history['pendapatan_pengurus2'] = ($persentasePengurus2 / 100) * $history['total_harga_jual'];
-            $formData[] = $history;
+            $formData[$value->unique_key_transaction][] = $history;
         }
         $data['histories'] = $formData;
         $data['title'] = 'History Transaksi';
-        $data['fileName'] = 'History Transaksi.pdf';
+        $data['fileName'] = 'History Transaksi.xlsx';
         $data['path'] = 'reports.transaksi';
         $data['tanggal'] = $tanggalExport;
 
-        $pdf = $this->exportPDF($data);
+        // $pdf = $this->exportPDF($data);
         
-        return $pdf->download($data['fileName']);
+        // return $pdf->download($data['fileName']);
+        return Excel::download(new TransaksiExport($data), $data['fileName']);
     }
 
     public function pdfHistoryPengeluaran(Request $request) {
@@ -302,5 +311,57 @@ class DataSampahController extends Controller
         
         // Return the PDF as a download
         return $pdf;
+    }
+
+    public function detailJsonHistory(Request $request)
+    {
+        $histories = HistoryPembelian::where('unique_key_transaction', $request->id)->get();
+        
+        $persentaseNasabah = 70;
+        $persentasePengurus1 = 10;
+        $persentasePengurus2 = 20;
+        
+        foreach ($histories as $key => $value) {
+            $history = $value->toArray();
+            $history['nama_nasabah'] = Nasabah::find($history['id_nasabah'])->nama;
+            $penjualan = HistoryPenjualan::where('id_pembelian', $history['id'])->first();
+            $history['total_harga_jual'] = $penjualan ? $penjualan->total_harga : 0;
+            $history['jumlah_jual'] = $penjualan ? $penjualan->jumlah_jual : 0;
+            $history['harga_jual'] = $penjualan ? $penjualan->harga : 0;
+            $history['laba'] = $penjualan ? $history['total_harga_jual'] - $history['total_harga'] : 0;
+            $history['pendapatan_nasabah'] = ($persentaseNasabah / 100) * $history['total_harga_jual'];
+            $history['pendapatan_pengurus1'] = ($persentasePengurus1 / 100) * $history['total_harga_jual'];
+            $history['pendapatan_pengurus2'] = ($persentasePengurus2 / 100) * $history['total_harga_jual'];
+            $formData[] = $history;
+        }
+        $data['histories'] = $formData;
+
+        return response()->json($data, 200);
+    }
+
+    public function destroyHistory($uniqueKey)
+    {
+        $histories = HistoryPembelian::where('unique_key_transaction', $uniqueKey)->get();
+        
+        foreach ($histories as $key => $value) {
+            $value->delete();
+            $history = $value->toArray();
+            $penjualan = HistoryPenjualan::where('id_pembelian', $history['id'])->first();
+            $penjualan->delete();
+        }
+
+        return redirect()->back();
+
+    }
+
+    private function getAllAlamat() {
+        $nasabah = Nasabah::all();
+        $arrayAlamat = [];
+        foreach ($nasabah as $key => $value) {
+            if (!in_array($value->alamat, $arrayAlamat)) {
+                $arrayAlamat[] = $value->alamat;
+            }
+        }
+        return $arrayAlamat;
     }
 }

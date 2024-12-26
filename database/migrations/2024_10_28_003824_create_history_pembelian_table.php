@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('history_pembelian', function (Blueprint $table) {
             $table->id();
             $table->string('id_sampah');
+            $table->string('unique_key_transaction');
             $table->string('id_nasabah');
             $table->string('nama_sampah');
             $table->float('jumlah_beli');

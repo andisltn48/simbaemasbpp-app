@@ -36,6 +36,7 @@
                             <th>No</th>
                             <th>Nama</th>
                             <th>Email</th>
+                            <th>Alamat</th>
                             <th>Action</th>
                         </tr>
                       </thead>
@@ -49,6 +50,7 @@
                             <td>{{$no++}}</td>
                             <td>{{$admin->name}}</td>
                             <td>{{$admin->email}}</td>
+                            <td>{{$admin->alamat}}</td>
                             <td class="">
                                 @if (Auth::user()->role === 'master_admin')
                                 <a 
@@ -95,6 +97,10 @@
                         <input type="text" name="email" class="form-control" id="email" required>
                     </div>
                     <div class="form-group">
+                        <label for="alamat">Alamat</label>
+                        <input type="text" name="alamat" class="form-control" id="alamat" required>
+                    </div>
+                    <div class="form-group">
                         <label for="password">Password</label>
                         <input type="text" name="password" class="form-control" id="password" required>
                     </div>
@@ -127,6 +133,10 @@
                     <div class="form-group">
                         <label for="email-edit">Email</label>
                         <input type="text" name="email" class="form-control" id="email-edit" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="alamat-edit">Alamat</label>
+                        <input type="text" name="alamat" class="form-control" id="alamat-edit" required>
                     </div>
                     <div class="form-group">
                         <label for="password">Password</label>
@@ -181,6 +191,7 @@
                 $("#name-edit").val(response.user.name);
 
                 $("#email-edit").val(response.user.email);
+                $("#alamat-edit").val(response.user.alamat);
             });
 
             

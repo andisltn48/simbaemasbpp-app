@@ -1,7 +1,12 @@
 <div class="table-responsive">
-  <h3 class="text-center">Laporan Pemasukan - ({{$tanggal}})</h3>
+  
   <table class="table table-bordered table-striped" id="dataTable">
     <thead class="thead-dark">
+      <tr>
+        <td colspan="14">
+          <b>Laporan Pemasukan - ({{$tanggal}})</b>
+        </td>
+      </tr>
       <tr>
         <th>No</th>
         <th>Nama Nasabah</th>
@@ -15,7 +20,10 @@
         <th>Laba</th>
         <th>Pendapatan Nasabah</th>
         <th>Pendapatan Pengurus 1</th>
+        @if (Auth::user()->role == 'master_admin')
+            
         <th>Pendapatan Pengurus 2</th>
+        @endif
         <th>Tanggal Transaksi</th>
       </tr>
     </thead>
@@ -23,27 +31,34 @@
         $no = 1;
     @endphp
     <tbody>
-      @foreach ($histories as $history)
-      @php
-          $tanggal = new DateTime($history['created_at']);
-          $tanggal = $tanggal->format('Y-m-d');
-      @endphp
-      <tr>
-          <td>{{$no++}}</td>
-          <td>{{$history['nama_nasabah']}}</td>
-          <td>{{$history['nama_sampah']}}</td>
-          <td>{{'Rp ' . number_format($history['harga'], 0, ',', '.')}}</td>
-          <td>{{$history['jumlah_beli']}}</td>
-          <td>{{'Rp ' . number_format($history['total_harga'], 0, ',', '.')}}</td>
-          <td>{{'Rp ' . number_format($history['harga_jual'], 0, ',', '.')}}</td>
-          <td>{{$history['jumlah_jual']}}</td>
-          <td>{{'Rp ' . number_format($history['total_harga_jual'], 0, ',', '.')}}</td>
-          <td>{{'Rp ' . number_format($history['laba'], 0, ',', '.')}}</td>
-          <td>{{'Rp ' . number_format($history['pendapatan_nasabah'], 0, ',', '.')}}</td>
-          <td>{{'Rp ' . number_format($history['pendapatan_pengurus1'], 0, ',', '.')}}</td>
-          <td>{{'Rp ' . number_format($history['pendapatan_pengurus2'], 0, ',', '.')}}</td>
-          <td>{{$tanggal}}</td>
-      </tr>
+      @foreach ($histories as $item)
+        @foreach ($item as $key => $history)
+        @php
+            $tanggal = new DateTime($history['created_at']);
+            $tanggal = $tanggal->format('Y-m-d');
+        @endphp
+        <tr>
+            @if ($key == 0)
+            <td rowspan="{{count($item)}}">{{$no++}}</td>
+            <td rowspan="{{count($item)}}">{{$history['nama_nasabah']}}</td>
+            @endif
+            <td>{{$history['nama_sampah']}}</td>
+            <td>{{'Rp ' . number_format($history['harga'], 0, ',', '.')}}</td>
+            <td>{{$history['jumlah_beli']}}</td>
+            <td>{{'Rp ' . number_format($history['total_harga'], 0, ',', '.')}}</td>
+            <td>{{'Rp ' . number_format($history['harga_jual'], 0, ',', '.')}}</td>
+            <td>{{$history['jumlah_jual']}}</td>
+            <td>{{'Rp ' . number_format($history['total_harga_jual'], 0, ',', '.')}}</td>
+            <td>{{'Rp ' . number_format($history['laba'], 0, ',', '.')}}</td>
+            <td>{{'Rp ' . number_format($history['pendapatan_nasabah'], 0, ',', '.')}}</td>
+            <td>{{'Rp ' . number_format($history['pendapatan_pengurus1'], 0, ',', '.')}}</td>
+            @if (Auth::user()->role == 'master_admin')
+            
+            <td>{{'Rp ' . number_format($history['pendapatan_pengurus2'], 0, ',', '.')}}</td>
+            @endif
+            <td>{{$tanggal}}</td>
+        </tr>
+        @endforeach
       @endforeach
     </tbody>
   </table>

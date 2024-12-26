@@ -82,26 +82,18 @@
             </div>
           </div>                  
         </div>
+        <form method="post" action="{{route('data-sampah.submit-pembelian')}}">
+        @csrf
         <div class="row">
             <div class="col">
               <div class="card">
-                <form method="post" action="{{route('data-sampah.submit-pembelian')}}">
-                  @csrf
                   <div class="card-header">
                     <h4>Pembelian</h4>
                   </div>
                   <div class="card-body">
                     
-                    <p>Tanggal transaksi <b>({{{date("Y-m-d")}}})</b></p>
-                    <div class="form-group">
-                      <label>Nama Sampah</label>
-                      <select name="id_sampah" class="form-control select-sampah" id="select-sampah">
-                        <option value="">Pilih Sampah</option>
-                        @foreach ($data_sampah as $sampah)
-                            <option value="{{$sampah->id}}">{{$sampah->nama_sampah}}</option>
-                        @endforeach
-                      </select>
-                    </div>
+                    <p>Tanggal transaksi <b>(Y-m-d)</b> <b><input type="text" class="form-control" value="{{date("Y-m-d")}}"></b></p>
+                    
                     <div class="form-group">
                       <label>Nama Nasabah</label>
                       <select name="id_nasabah" class="form-control select-nasabah">
@@ -111,35 +103,12 @@
                         @endforeach
                       </select>
                     </div>
-                    <div class="form-group">
-                      <label>Harga Beli</label>
-                      <input type="text" class="form-control" readonly id="harga">
-                    </div>
-                    <div class="form-group">
-                      <label>Harga Jual</label>
-                      <input type="text" class="form-control" readonly id="harga-penjualan">
-                    </div>
-                    <div class="form-group">
-                      <label>Satuan</label>
-                      <input type="text" class="form-control" readonly id="satuan">
-                    </div>
-                    <div class="form-group">
-                      <label>Jumlah Beli</label>
-                      <input name="jumlah_beli" class="form-control" type="number" step="0.01" required oninput="onInputChange(event)">
-                    </div>
-                    <div class="form-group">
-                      <label>Total Harga Beli</label>
-                      <input name="total_harga" class="form-control" type="text" readonly id="total-harga">
-                    </div>
-                    <div class="form-group">
-                      <label>Total Harga Jual</label>
-                      <input name="total_harga_jual" class="form-control" type="text" readonly id="total-harga-penjualan">
-                    </div>
                   </div>
                   <div class="card-footer text-right">
-                    <button class="btn btn-primary">Simpan</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    
+                    <button onclick="addForm()" type="button" class="btn btn-primary">Tambah</button>
                   </div>
-                </form>
               </div>
             </div>
             {{-- <div class="col-12 col-md-6 col-lg-6">
@@ -195,6 +164,66 @@
               </div>
             </div> --}}
         </div>
+        <div class="row">
+          <div class="col" id="forms-list">
+            {{-- <div class="card">
+                <div class="card-header">
+                  <h4>Pembelian</h4>
+                </div>
+                <div class="card-body">
+                  
+                  <p>Tanggal transaksi <b>(Y-m-d)</b> <b><input type="text" class="form-control" value="{{date("Y-m-d")}}"></b></p>
+                  <div class="form-group">
+                    <label>Nama Sampah</label>
+                    <select name="id_sampah" class="form-control select-sampah" id="select-sampah">
+                      <option value="">Pilih Sampah</option>
+                      @foreach ($data_sampah as $sampah)
+                          <option value="{{$sampah->id}}">{{$sampah->nama_sampah}}</option>
+                      @endforeach
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Nama Nasabah</label>
+                    <select name="id_nasabah" class="form-control select-nasabah">
+                      <option value="">Pilih Nasabah</option>
+                      @foreach ($data_nasabah as $nasabah)
+                          <option value="{{$nasabah->id}}">{{$nasabah->nama}}</option>
+                      @endforeach
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Harga Beli</label>
+                    <input type="text" class="form-control" readonly id="harga">
+                  </div>
+                  <div class="form-group">
+                    <label>Harga Jual</label>
+                    <input type="text" class="form-control" readonly id="harga-penjualan">
+                  </div>
+                  <div class="form-group">
+                    <label>Satuan</label>
+                    <input type="text" class="form-control" readonly id="satuan">
+                  </div>
+                  <div class="form-group">
+                    <label>Jumlah Beli</label>
+                    <input name="jumlah_beli" class="form-control" type="number" step="0.01" required oninput="onInputChange(event)">
+                  </div>
+                  <div class="form-group">
+                    <label>Total Harga Beli</label>
+                    <input name="total_harga" class="form-control" type="text" readonly id="total-harga">
+                  </div>
+                  <div class="form-group">
+                    <label>Total Harga Jual</label>
+                    <input name="total_harga_jual" class="form-control" type="text" readonly id="total-harga-penjualan">
+                  </div>
+                </div>
+                <div class="card-footer text-right">
+                  <button class="btn btn-primary">Simpan</button>
+                </div>
+            </div> --}}
+          </div>
+      </div>
+        
+    </form>
     </section>
     <script>
         $('.select-sampah').select2({
@@ -289,4 +318,29 @@
             return 'Rp ' + rupiah;
         }
     </script>
+    <script>
+      let formCount = 0;
+
+      function addForm() {
+          formCount++;
+          const formContainer = document.createElement('div');
+          formContainer.classList.add('form-item');
+          formContainer.setAttribute('id', `form-${formCount}`);
+
+          formContainer.innerHTML = `
+              <label for="name-${formCount}">Name:</label>
+              <input type="text" id="name-${formCount}" name="name-${formCount}" required>
+              <label for="email-${formCount}">Email:</label>
+              <input type="email" id="email-${formCount}" name="email-${formCount}" required>
+              <button type="button" onclick="deleteForm(${formCount})">Delete Form</button>
+          `;
+
+          document.getElementById('forms-list').appendChild(formContainer);
+      }
+
+      function deleteForm(formId) {
+          const form = document.getElementById(`form-${formId}`);
+          form.remove();
+      }
+  </script>
 </x-app-layout>
