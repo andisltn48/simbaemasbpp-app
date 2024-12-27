@@ -92,11 +92,11 @@
                   </div>
                   <div class="card-body">
                     
-                    <p>Tanggal transaksi <b>(Y-m-d)</b> <b><input type="text" class="form-control" value="{{date("Y-m-d")}}"></b></p>
+                    <p>Tanggal transaksi <b>(Y-m-d)</b> <b><input required name="tanggal" type="text" class="form-control" value="{{date("Y-m-d")}}"></b></p>
                     
                     <div class="form-group">
                       <label>Nama Nasabah</label>
-                      <select name="id_nasabah" class="form-control select-nasabah">
+                      <select name="id_nasabah" class="form-control select-nasabah" required>
                         <option value="">Pilih Nasabah</option>
                         @foreach ($data_nasabah as $nasabah)
                             <option value="{{$nasabah->id}}">{{$nasabah->nama}}</option>
@@ -104,6 +104,7 @@
                       </select>
                     </div>
                   </div>
+                  
                   <div class="card-footer text-right">
                     <button type="submit" class="btn btn-primary">Simpan</button>
                     
@@ -164,66 +165,10 @@
               </div>
             </div> --}}
         </div>
-        <div class="row">
-          <div class="col" id="forms-list">
-            {{-- <div class="card">
-                <div class="card-header">
-                  <h4>Pembelian</h4>
-                </div>
-                <div class="card-body">
-                  
-                  <p>Tanggal transaksi <b>(Y-m-d)</b> <b><input type="text" class="form-control" value="{{date("Y-m-d")}}"></b></p>
-                  <div class="form-group">
-                    <label>Nama Sampah</label>
-                    <select name="id_sampah" class="form-control select-sampah" id="select-sampah">
-                      <option value="">Pilih Sampah</option>
-                      @foreach ($data_sampah as $sampah)
-                          <option value="{{$sampah->id}}">{{$sampah->nama_sampah}}</option>
-                      @endforeach
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <label>Nama Nasabah</label>
-                    <select name="id_nasabah" class="form-control select-nasabah">
-                      <option value="">Pilih Nasabah</option>
-                      @foreach ($data_nasabah as $nasabah)
-                          <option value="{{$nasabah->id}}">{{$nasabah->nama}}</option>
-                      @endforeach
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <label>Harga Beli</label>
-                    <input type="text" class="form-control" readonly id="harga">
-                  </div>
-                  <div class="form-group">
-                    <label>Harga Jual</label>
-                    <input type="text" class="form-control" readonly id="harga-penjualan">
-                  </div>
-                  <div class="form-group">
-                    <label>Satuan</label>
-                    <input type="text" class="form-control" readonly id="satuan">
-                  </div>
-                  <div class="form-group">
-                    <label>Jumlah Beli</label>
-                    <input name="jumlah_beli" class="form-control" type="number" step="0.01" required oninput="onInputChange(event)">
-                  </div>
-                  <div class="form-group">
-                    <label>Total Harga Beli</label>
-                    <input name="total_harga" class="form-control" type="text" readonly id="total-harga">
-                  </div>
-                  <div class="form-group">
-                    <label>Total Harga Jual</label>
-                    <input name="total_harga_jual" class="form-control" type="text" readonly id="total-harga-penjualan">
-                  </div>
-                </div>
-                <div class="card-footer text-right">
-                  <button class="btn btn-primary">Simpan</button>
-                </div>
-            </div> --}}
-          </div>
-      </div>
-        
-    </form>
+        <div class="col" id="forms-list">
+                    
+        </div>
+      </form>
     </section>
     <script>
         $('.select-sampah').select2({
@@ -270,20 +215,36 @@
 
         })
 
-        function onInputChange(event) {
+        function onInputChange(event, id) {
+            
             const inputField = event.target;
-            const formattedValue = inputField.value;
-            const harga = convertRupiahToInteger($("#harga").val());
-            const totalHarga = parseInt(harga * inputField.value);
-            $("#total-harga").val(formatRupiah(totalHarga));
+            var idSampah = inputField.value;
 
+            $.ajax({
+                method: "GET",
+                data: {
+                    id: idSampah
+                },
+                url: "{{ route('data-sampah.detail-json') }}",
+            }).done(function(response) {
+                let classHarga = `.harga-${id}`;
+                console.log(classHarga);
+                $(`${classHarga}`).val(formatRupiah(response.sampah.harga_beli));
+            });
             
-            const hargaJual = convertRupiahToInteger($("#harga-penjualan").val());
-            const totalHargaJual = parseInt(hargaJual * inputField.value);
-            
-            $("#total-harga-penjualan").val(formatRupiah(totalHargaJual));
         }
 
+        function onInputJumlah(event, id) {
+            const inputField = event.target;
+            const formattedValue = inputField.value;
+            const harga = convertRupiahToInteger($(`.harga-${id}`).val());
+            const totalHarga = parseInt(harga * inputField.value);
+            $(`.total-harga-${id}`).val(formatRupiah(totalHarga));
+            // const hargaJual = convertRupiahToInteger($("#harga-penjualan").val());
+            // const totalHargaJual = parseInt(hargaJual * inputField.value);
+            
+            // $("#total-harga-penjualan").val(formatRupiah(totalHargaJual));
+        }
         function onInputChangePenjualan(event) {
             const inputField = event.target;
             const formattedValue = inputField.value;
@@ -326,13 +287,33 @@
           const formContainer = document.createElement('div');
           formContainer.classList.add('form-item');
           formContainer.setAttribute('id', `form-${formCount}`);
+          formContainer.setAttribute('class', 'form-row');
 
           formContainer.innerHTML = `
-              <label for="name-${formCount}">Name:</label>
-              <input type="text" id="name-${formCount}" name="name-${formCount}" required>
-              <label for="email-${formCount}">Email:</label>
-              <input type="email" id="email-${formCount}" name="email-${formCount}" required>
-              <button type="button" onclick="deleteForm(${formCount})">Delete Form</button>
+              <div class="form-group col">
+                <label for="inputEmail4">Nama Sampah</label>
+                <select name="id_sampah[]" class="form-control select-sampah" id="select-sampah-${formCount}" onchange="onInputChange(event,${formCount})" required>
+                  <option value="">Pilih Sampah</option>
+                  @foreach ($data_sampah as $sampah)
+                      <option value="{{$sampah->id}}">{{$sampah->nama_sampah}}</option>
+                  @endforeach
+                </select>
+              </div>
+              <div class="form-group col">
+                <label for="inputPassword4">Harga</label>
+                <input type="text" class="form-control harga-${formCount}" id="inputPassword4" placeholder="text" readonly>
+              </div>
+              <div class="form-group col">
+                <label for="inputPassword4">Jumlah Beli</label>
+                <input type="number" name="jumlah[]"  class="form-control jumlah-beli-${formCount}" oninput="onInputJumlah(event,${formCount})" id="inputPassword4" step="0.01" required>
+              </div>
+              <div class="form-group col">
+                <label for="inputPassword4">Total Harga Beli</label>
+                <input type="text" class="form-control total-harga-${formCount}" id="inputPassword4" readonly>
+              </div>
+              <div class="form-group col">
+                <button type="button" onclick="deleteForm(${formCount})"><i class="fas fa-trash" style="color: red;"></i></button>
+              </div>
           `;
 
           document.getElementById('forms-list').appendChild(formContainer);

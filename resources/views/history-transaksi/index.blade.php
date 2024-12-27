@@ -37,7 +37,7 @@
                       </div>
                       <div class="input-group-prepend">
                         <div class="input-group-text">
-                          <a href="{{route('data-sampah.pdf-pemasukan')}}?start={{$startDate}}&end={{$endDate}}&alamat={{$alamat}}">Export PDF</a>
+                          <a href="{{route('data-sampah.pdf-pemasukan')}}?start={{$startDate}}&end={{$endDate}}&alamat={{$alamat}}">Export Excel</a>
                         </div>
                       </div>
                     </div>
@@ -73,6 +73,7 @@
                         @foreach ($histories as $history)
                         @php
                             $tanggal = new DateTime($history['created_at']);
+                            $tanggal->setTimezone(new DateTimeZone('Asia/Makassar'));
                             $tanggal = $tanggal->format('Y-m-d');
                         @endphp
                         <tr>

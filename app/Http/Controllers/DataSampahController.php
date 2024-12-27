@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\DataSampahExport;
 use App\Exports\TransaksiExport;
 use App\Models\DataSampah;
 use App\Models\HistoryPembelian;
@@ -61,39 +62,54 @@ class DataSampahController extends Controller
     }
 
     public function submitPembelian(Request $request) {
+        $requestForm = $request->all();
         
-        $dataSampah = DataSampah::find($request->id_sampah);
-        $formData = [
-            'id_sampah' => $request->id_sampah,
-            'nama_sampah' => $dataSampah->nama_sampah,
-            'harga' => $this->convertRupiahToInteger($dataSampah->harga_beli),
-            'jumlah_beli' => $request->jumlah_beli,
-            'id_nasabah' => $request->id_nasabah,
-            'total_harga' => $this->convertRupiahToInteger($request->total_harga),
-        ];
-
-        $pembelian = HistoryPembelian::create($formData);
-        $dataNasabah = Nasabah::find($request->id_nasabah);
-        $totalHargaJual = $this->convertRupiahToInteger($request->total_harga_jual);
-        $formDataPenjualan = [
-            'id_sampah' => $request->id_sampah,
-            'nama_sampah' => $dataSampah->nama_sampah,
-            'harga' => $this->convertRupiahToInteger($dataSampah->harga_jual),
-            'id_nasabah' => $request->id_nasabah,
-            'jumlah_jual' => $request->jumlah_beli,
-            'total_harga' => $totalHargaJual,
-            'id_pembelian' => $pembelian->id,
-        ];
-
-        $percentage = 70;
-        $totalSaldoNasabah = ($percentage / 100) * $totalHargaJual;
-        $totalSaldoNasabah = $totalSaldoNasabah + $dataNasabah->saldo;
-
-        $dataNasabah->update([
-            'saldo' => $totalSaldoNasabah
-        ]);
-
-        HistoryPenjualan::create($formDataPenjualan);
+        $tanggal = strtotime($requestForm['tanggal']);
+        $tanggal = date("Y-m-d", $tanggal);
+        
+        $dataNasabah = Nasabah::find($requestForm['id_nasabah']);
+        $uniqueKey = time() . random_int(1, 99999);
+        foreach ($requestForm['id_sampah'] as $key => $idSampah) {
+            $dataSampah = DataSampah::find($idSampah);
+            $jumlah = floatval($requestForm['jumlah'][$key]);
+            $totalHargaBeli = $jumlah * $this->convertRupiahToInteger($dataSampah->harga_beli);
+            $formData = [
+                'id_sampah' => $idSampah,
+                'nama_sampah' => $dataSampah->nama_sampah,
+                'harga' => $this->convertRupiahToInteger($dataSampah->harga_beli),
+                'jumlah_beli' => $jumlah,
+                'id_nasabah' => $dataNasabah->id,
+                'total_harga' => $this->convertRupiahToInteger($totalHargaBeli),
+                'unique_key_transaction' => $uniqueKey,
+                'created_at' => $tanggal,
+                'updated_at' => $tanggal
+            ];
+            
+            $pembelian = HistoryPembelian::create($formData);
+            $totalHargaJual = $jumlah * $this->convertRupiahToInteger($dataSampah->harga_jual);
+            $formDataPenjualan = [
+                'id_sampah' => $idSampah,
+                'nama_sampah' => $dataSampah->nama_sampah,
+                'harga' => $this->convertRupiahToInteger($dataSampah->harga_jual),
+                'id_nasabah' => $dataNasabah->id,
+                'jumlah_jual' => $jumlah,
+                'total_harga' => $totalHargaJual,
+                'id_pembelian' => $pembelian->id,
+                'created_at' => $tanggal,
+                'updated_at' => $tanggal
+            ];
+    
+            $percentage = 70;
+            $totalSaldoNasabah = ($percentage / 100) * $totalHargaJual;
+            $totalSaldoNasabah = $totalSaldoNasabah + $dataNasabah->saldo;
+    
+            $dataNasabah->update([
+                'saldo' => $totalSaldoNasabah
+            ]);
+    
+            HistoryPenjualan::create($formDataPenjualan);
+        }
+        
 
         return redirect()->route('dashboard.index');
     }
@@ -121,6 +137,9 @@ class DataSampahController extends Controller
             $history = $value->toArray();
             $nasabah = Nasabah::find($history['id_nasabah']);
 
+            if (Auth::user()->role == 'admin' && Auth::user()->alamat != $nasabah->alamat) {
+                continue;
+            }
             if ($request->alamat && $request->alamat != '' && $nasabah->alamat != $request->alamat) {
                 continue;
             }
@@ -295,13 +314,13 @@ class DataSampahController extends Controller
         
         $data['histories'] = $formData;
         $data['title'] = 'History Data Sampah';
-        $data['fileName'] = 'History Data Sampah.pdf';
+        $data['fileName'] = 'History Data Sampah.xlsx';
         $data['path'] = 'reports.data-sampah';
         $data['tanggal'] = $tanggalExport;
 
-        $pdf = $this->exportPDF($data);
+        // $pdf = $this->exportPDF($data);
         
-        return $pdf->download($data['fileName']);
+        return Excel::download(new DataSampahExport($data), $data['fileName']);
     }
 
     public function exportPDF($data)

@@ -39,7 +39,7 @@
                       
                       <div class="input-group-prepend">
                         <div class="input-group-text">
-                          <a href="{{route('data-sampah.pdf-pengeluaran')}}?start={{$startDate}}&end={{$endDate}}">Export PDF</a>
+                          <a href="{{route('data-sampah.pdf-pengeluaran')}}?start={{$startDate}}&end={{$endDate}}">Export Excel</a>
                         </div>
                       </div>
                     </div>

@@ -19,7 +19,7 @@ class DashboardController extends Controller
             $data['total_pembelian'] = $this->integerToRupiah(HistoryPembelian::sum('total_harga'));
             $data['penjualan'] = HistoryPenjualan::all()->count();
             $data['pembelian'] = HistoryPembelian::all()->count();
-            $data['pembelian_in_kg'] = HistoryPembelian::sum('jumlah_beli');
+            $data['pembelian_in_kg'] = round(HistoryPembelian::sum('jumlah_beli'), 2);
             return view('dashboard.index',$data);
         } else {
             $dataNasabah = Nasabah::where('user_id', Auth::user()->id)->first();
