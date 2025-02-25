@@ -103,6 +103,11 @@
                         @endforeach
                       </select>
                     </div>
+                    
+                    <div class="form-group">
+                      <label>Total Harga</label>
+                      <input name="total_harga" class="form-control" type="text" readonly id="total-harga">
+                    </div>
                   </div>
                   
                   <div class="card-footer text-right">
@@ -240,6 +245,12 @@
             const harga = convertRupiahToInteger($(`.harga-${id}`).val());
             const totalHarga = parseInt(harga * inputField.value);
             $(`.total-harga-${id}`).val(formatRupiah(totalHarga));
+            var total = 0;
+            $('[id="total_harga_beli"]').each(function() {
+                total += parseFloat(convertRupiahToInteger($(this).val())) || 0; // Adds value of each element with id "A" and ensures it is a number
+            });
+            $("#total-harga").val(formatRupiah(total));
+            
             // const hargaJual = convertRupiahToInteger($("#harga-penjualan").val());
             // const totalHargaJual = parseInt(hargaJual * inputField.value);
             
@@ -309,7 +320,7 @@
               </div>
               <div class="form-group col">
                 <label for="inputPassword4">Total Harga Beli</label>
-                <input type="text" class="form-control total-harga-${formCount}" id="inputPassword4" readonly>
+                <input type="text" class="form-control total-harga-${formCount}" id="total_harga_beli" readonly>
               </div>
               <div class="form-group col">
                 <button type="button" onclick="deleteForm(${formCount})"><i class="fas fa-trash" style="color: red;"></i></button>
@@ -322,6 +333,11 @@
       function deleteForm(formId) {
           const form = document.getElementById(`form-${formId}`);
           form.remove();
+          var total = 0;
+            $('[id="total_harga_beli"]').each(function() {
+                total += parseFloat(convertRupiahToInteger($(this).val())) || 0; // Adds value of each element with id "A" and ensures it is a number
+            });
+            $("#total-harga").val(formatRupiah(total));
       }
   </script>
 </x-app-layout>
